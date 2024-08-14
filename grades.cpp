@@ -61,7 +61,7 @@ public:
     double getDiemquatrinh() const { return diemquatrinh; }
     double getDiemhocphan() const { return diemhocphan; }
     string getDiemchu() const { return xeploai; }
-
+    void DanhGia(double diemhocphan, double min, double max, const string &s);
     void set_diemquatrinh();
     void set_diemhocphan();
     void diemchu();
@@ -78,28 +78,24 @@ void Grade::set_diemquatrinh() {
 void Grade::set_diemhocphan(){
     diemhocphan = ((customRound(diemquatrinh / 0.25) * 0.25) * 0.5) + (ck * 0.5);
 }
+void Grade::DanhGia(double diemhocphan, double min, double max, const std::string& s) {
+    if (diemhocphan >= min && diemhocphan <= max) {
+        xeploai = s;
+    }
+}
 void Grade:: diemchu() {
     set_diemquatrinh();
     set_diemhocphan();
     diemhocphan = customRound(diemhocphan);
-    if ((diemhocphan >= 0) && (diemhocphan <= 3.9))
-        xeploai = 'F';
-    else if ((diemhocphan >= 4.0) && (diemhocphan <= 4.9))
-        xeploai = 'D';
-    else if ((diemhocphan >= 5.0) && (diemhocphan <= 5.4))
-        xeploai = "D+";
-    else if ((diemhocphan >= 5.5) && (diemhocphan <= 6.4))
-        xeploai = 'C';
-    else if ((diemhocphan >= 6.5) && (diemhocphan <= 6.9))
-        xeploai = "C+";
-    else if ((diemhocphan >= 7.0) && (diemhocphan <= 7.9))
-        xeploai = 'B';
-    else if ((diemhocphan >= 8.0) && (diemhocphan <= 8.4))
-        xeploai = "B+";
-    else if ((diemhocphan >= 8.5) && (diemhocphan <= 9.4))
-        xeploai = 'A';
-    else if ((diemhocphan >= 9.5) && (diemhocphan <= 10))
-        xeploai = "A+";
+    DanhGia(diemhocphan, 0, 3.9, "F");
+    DanhGia(diemhocphan, 4.0, 4.9, "D");
+    DanhGia(diemhocphan, 5.0, 5.4, "D+");
+    DanhGia(diemhocphan, 5.5, 6.4, "C");
+    DanhGia(diemhocphan, 6.5, 6.9, "C+");
+    DanhGia(diemhocphan, 7.0, 7.9, "B");
+    DanhGia(diemhocphan, 8.0, 8.4, "B+");
+    DanhGia(diemhocphan, 8.5, 9.4, "A");
+    DanhGia(diemhocphan, 9.5, 10, "A+");
 }
 
 istream& operator>>(istream& is, Grade& s) {
