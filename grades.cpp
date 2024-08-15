@@ -131,8 +131,9 @@ public:
     void addStudent(Grade grade, const string &filename);
     void removeStudent(int number, const string &filename);
     void display();
-    void sortGrade(const string &filename);
     void displayfileclass(const string &filename);
+    void sortGrade(const string &filename);
+    void filler(const string &filename);
 };
 void Classes::addStudent(Grade grade, const string &filename){
     students.push_back(grade);
@@ -146,8 +147,6 @@ void Classes::addStudent(Grade grade, const string &filename){
     output.close();
 }
 void Classes::removeStudent(int number, const string &filename){
-    if(!students.empty())
-        students.clear(); // clear to sort
     ifstream file(filename);
     string line;
     getline(file, line);//skip header line
@@ -203,41 +202,6 @@ void Classes::display(){
     }
 }
 
-void Classes::sortGrade(const string &filename) {
-    if(!students.empty())
-        students.clear(); // clear to sort
-    ifstream file(filename);
-    string line;
-    getline(file, line);//skip header line
-
-    if (file.is_open()) {    
-        while (getline(file,line)){
-        stringstream ss(line);
-        string token;
-        vector<string> tokens;
-        while (getline(ss,token,',')){
-            tokens.push_back(token);
-        }
-        double cc = stod(tokens[0]);
-        double g1 = stod(tokens[1]);
-        double g2 = stod(tokens[2]);
-        double yt = stod(tokens[3]);
-        double c  = stod(tokens[4]);
-
-        Grade g(cc, g1, g2, yt, c);
-        g.set_diemquatrinh();
-        g.set_diemhocphan();
-        g.diemchu();
-        students.push_back(g);
-        }
-        file.close();
-    }
-
-    stable_sort(students.begin(), students.end(), [](const Grade &a, const Grade &b)
-         { return a.getDiemhocphan() > b.getDiemhocphan(); });
-    cout << "Grades sorted successfully!" << endl;
-}
-
 void Classes::displayfileclass(const string &filename) {
     ifstream file(filename);
     string line;
@@ -282,10 +246,76 @@ void Classes::displayfileclass(const string &filename) {
         file.close();
     } else {
         cout << "Unable to open " << endl;
+    }    
+}
+void Classes::sortGrade(const string &filename) {
+    if(!students.empty())
+        students.clear(); // clear to sort
+    ifstream file(filename);
+    string line;
+    getline(file, line);//skip header line
+
+    if (file.is_open()) {    
+        while (getline(file,line)){
+        stringstream ss(line);
+        string token;
+        vector<string> tokens;
+        while (getline(ss,token,',')){
+            tokens.push_back(token);
+        }
+        double cc = stod(tokens[0]);
+        double g1 = stod(tokens[1]);
+        double g2 = stod(tokens[2]);
+        double yt = stod(tokens[3]);
+        double c  = stod(tokens[4]);
+
+        Grade g(cc, g1, g2, yt, c);
+        g.set_diemquatrinh();
+        g.set_diemhocphan();
+        g.diemchu();
+        students.push_back(g);
+        }
+        file.close();
     }
-    
+
+    stable_sort(students.begin(), students.end(), [](const Grade &a, const Grade &b)
+         { return a.getDiemhocphan() > b.getDiemhocphan(); });
+    cout << "Grades sorted successfully!" << endl;
 }
 
+void Classes::filler(const string &filename){
+    ifstream file(filename);
+    string line;
+    getline(file, line);//skip header
+    int count = 0;
+
+    if(file.is_open()){
+        while(getline(file,line)){
+            stringstream ss(line);
+            vector<string> tokens;
+            string token;
+            while(getline(ss, token, ',')){
+                tokens.push_back(token);
+            }
+            double cc = stod(tokens[0]);
+            double g1 = stod(tokens[1]);
+            double g2 = stod(tokens[2]);
+            double yt = stod(tokens[3]);
+            double c = stod(tokens[4]);
+
+            Grade g(cc, g1, g2, yt, c);
+            g.set_diemquatrinh();
+            g.set_diemhocphan();
+            g.diemchu();
+            if((g.getDiemchu()=="A")||(g.getDiemchu()=="A+")){
+                students.push_back(g);
+                count++;
+            }
+        }
+        cout << "Number of student having high grade: " << count << endl;
+        display();
+    }
+}
 
 int main (){
     Classes clas;
@@ -296,9 +326,10 @@ int main (){
         cout << "    1. Add student's grade" << endl;
         cout << "    2. Remove student's grade" << endl;
         cout << "    3. Display class's grades" << endl;
-        cout << "    4. Import class's file" << endl;
-        cout << "    5. Sort grade" << endl;
-        cout << "    6. Exit" << endl;
+        cout << "    4. Display file of class" << endl;
+        cout << "    5. Sort grades" << endl;
+        cout << "    6. Filler high grades" << endl;
+        cout << "    7. Exit" << endl;
         cout << "\nEnter your choice: ";
         cin >> choice;
         Grade g1;
@@ -326,11 +357,14 @@ int main (){
             clas.display();
             break;
         case 6:
+            clas.filler("student_grades.csv");
+            break;
+        case 7:
             break;
         default:
             cout << "Invalid choice, please try again." << endl;
     }
-    } while (choice != 6);
+    } while (choice != 7);
 }
 
     // int n, sum = 0;
