@@ -11,6 +11,18 @@ void swap(double &a,double &b){
     b = temp;
 }
 
+void header(){
+    cout << "--------------------------------------------------------------COURSE GRADE--------------------------------------------------------------" << endl;
+    cout << left << "|" << setw(11) << " "
+         << "|" << setw(16) << "Diem Chuyen Can"
+         << "|" << setw(19) << "Diem Giua Ki Lan 1"
+         << "|" << setw(19) << "Diem Giua Ki Lan 2"
+         << "|" << setw(12) << "Diem Y Thuc"
+         << "|" << setw(13) << "Diem Cuoi Ki"
+         << "|" << setw(15) << "Diem Qua Trinh"
+         << "|" << setw(14) << "Diem Hoc Phan"
+         << "|" << setw(9) << "XEP LOAI" << endl;
+}
 
 double customRound(double num) {
     double integerPart;
@@ -19,6 +31,9 @@ double customRound(double num) {
     if (fractionalPart > 0.25 && fractionalPart < 0.75) {
         return integerPart + 0.5;
     } 
+    else if((fractionalPart==0.25)||(fractionalPart==0.75)||(fractionalPart==0.5)){
+        return num;
+    }
     else if (fractionalPart >= 0.75) {
         return ceil(num);
     } 
@@ -76,7 +91,7 @@ void Grade::set_diemquatrinh() {
 }
 
 void Grade::set_diemhocphan(){
-    diemhocphan = ((customRound(diemquatrinh / 0.25) * 0.25) * 0.5) + (ck * 0.5);
+    diemhocphan = (((customRound(diemquatrinh) / 0.25) * 0.25) * 0.5) + (ck * 0.5);
 }
 void Grade::DanhGia(double diemhocphan, double min, double max, const std::string& s) {
     if (diemhocphan >= min && diemhocphan <= max) {
@@ -182,17 +197,7 @@ void Classes::display(){
 		cout << "\n--> Class is empty." << endl;
 	}
 	else {
-        cout << "--------------------------------------------------------------COURSE GRADE--------------------------------------------------------------" << endl;
-        cout << left << "|" << setw(11) << " "
-             << "|" << setw(16) << "Diem Chuyen Can"
-             << "|" << setw(19) << "Diem Giua Ki Lan 1"
-             << "|" << setw(19) << "Diem Giua Ki Lan 2"
-             << "|" << setw(12) << "Diem Y Thuc"
-             << "|" << setw(13) << "Diem Cuoi Ki"
-             << "|" << setw(15) << "Diem Qua Trinh"
-             << "|" << setw(14) << "Diem Hoc Phan"
-             << "|" << setw(9) << "XEP LOAI" << endl;
-
+        header();
         int i = 1;
         for(auto it = students.begin(); it != students.end();++it){
             cout << left << "|" << setw(9) << "#Student " << right << setw(2) << i;
@@ -208,18 +213,8 @@ void Classes::displayfileclass(const string &filename) {
     getline(file, line);//skip header line
 
 
-    if (file.is_open()) {    
-        cout << "--------------------------------------------------------------COURSE GRADE--------------------------------------------------------------" << endl;
-        cout << left << "|" << setw(11) << " "
-             << "|" << setw(16) << "Diem Chuyen Can"
-             << "|" << setw(19) << "Diem Giua Ki Lan 1"
-             << "|" << setw(19) << "Diem Giua Ki Lan 2"
-             << "|" << setw(12) << "Diem Y Thuc"
-             << "|" << setw(13) << "Diem Cuoi Ki"
-             << "|" << setw(15) << "Diem Qua Trinh"
-             << "|" << setw(14) << "Diem Hoc Phan"
-             << "|" << setw(9) << "XEP LOAI" << endl;
-
+    if (file.is_open()) {
+        header();
         int i = 1;
         while (getline(file,line)){
         stringstream ss(line);
@@ -284,11 +279,14 @@ void Classes::sortGrade(const string &filename) {
 }
 
 void Classes::filler(const string &filename){
+    vector<Grade> fill;
     ifstream file(filename);
     string line;
     getline(file, line);//skip header
     int count = 0;
+    int i = 1;
 
+    header();
     if(file.is_open()){
         while(getline(file,line)){
             stringstream ss(line);
@@ -308,12 +306,15 @@ void Classes::filler(const string &filename){
             g.set_diemhocphan();
             g.diemchu();
             if((g.getDiemchu()=="A")||(g.getDiemchu()=="A+")){
-                students.push_back(g);
                 count++;
+            if(count!=0){
+                cout << left << "|" << setw(9) << "#Student " << right << setw(2) << i;
+                cout << g;
+                ++i;
+            }
             }
         }
         cout << "Number of student having high grade: " << count << endl;
-        display();
     }
 }
 
@@ -337,6 +338,7 @@ int main (){
         case 1:
             cin >> g1;
             clas.addStudent(g1,"student_grades.csv");
+            cout << left << "|" << setw(9) << "New student ";
             cout << g1;
             cout << "Added successfully!" << endl;
             break;
